@@ -1,3 +1,6 @@
+# https://www.codewars.com/kata/556b85b433fb5e899200003f
+# convert fractions to most simplified form
+
 def mixed_fraction(s)
   numerator, denominator = s.split('/').map(&:to_i)
 
