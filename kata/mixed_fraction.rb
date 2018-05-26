@@ -6,48 +6,35 @@ def mixed_fraction(s)
   if evenly_divides?(numerator, denominator)
     (numerator / denominator).to_s
   else
-    reduce_fraction(numerator, denominator)
-  end
-end
-
-def reduce_fraction(numerator, denominator)
-  sign = (numerator * denominator).negative? ? -1 : 1
-  whole = numerator.abs / denominator.abs
-  remainder = (numerator - (whole * denominator)).abs
-  
-  top = remainder.abs
-  bottom = denominator.abs
-  
-  fractional = simplify_fraction(top, bottom)
-  
-  if evenly_divides?(numerator, denominator) || whole.zero?
-    "#{fractional}"
-  else
-    "#{sign * whole} #{fractional}"
+    simplify_fraction(numerator, denominator)
   end
 end
 
 def simplify_fraction(numerator, denominator)
-  divisor = lcd(numerator, denominator)
-  puts "numerator: #{numerator}, denominator: #{denominator} divisor: #{divisor}"
-  
-  numerator /= divisor
-  denominator /= divisor
-  
-  return "#{numerator}/#{denominator}"
+  sign = (numerator * denominator).negative? ? -1 : 1
+  top = numerator.abs
+  bottom = denominator.abs
+
+  whole_part = top / bottom
+  remainder = top - (whole_part * bottom)
+
+  largest_common_denominator = lcd(remainder, bottom)
+
+  remainder /= largest_common_denominator
+  bottom /= largest_common_denominator
+
+  if evenly_divides?(numerator, denominator) || whole_part.zero?
+    "#{remainder * sign}/#{bottom}"
+  else
+    "#{sign * whole_part} #{remainder}/#{bottom}"
+  end
 end
 
 def lcd(numerator, denominator)
-  if denominator > 0
-    2.upto(denominator).each do |factor|
-      return factor if denominator % factor == 0 && numerator % factor == 0
-    end
-  else
-    -2.downto(denominator).each do |factor|
-      return factor if denominator % factor == 0 && numerator % factor == 0
-    end
+  denominator.downto(2).each do |factor|
+    return factor if denominator % factor == 0 && numerator % factor == 0
   end
-  
+
   1
 end
 
